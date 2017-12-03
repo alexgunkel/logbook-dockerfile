@@ -17,19 +17,21 @@ WORKDIR /logbook-frontend
 COPY --from=git /logbook-frontend/ .
 RUN npm i \
   && npm install -g @angular/cli \
-  && ng build
+  && ng build \
+  && mv ./dist/index.html ./dist/Index.html \
+  && sed -i -e 's|<base href="/">|<base href="{{.PathToStatic}}">|g' ./dist/Index.html
 
 # finally, put all things together and build a small app-image
 FROM alpine:latest
-RUN apk --no-cache add ca-certificates \
-  && mkdir -p /app/resources/private/template \
-  && mkdir -p /frontend
+RUN mkdir -p /backend/public \
+  && mkdir -p /frontend \
+  && mkdir /app
 WORKDIR /app
-COPY --from=builder /go/src/github.com/alexgunkel/logbook/logbook .
-COPY --from=builder /go/src/github.com/alexgunkel/logbook/resources/private/template/Index.html ./resources/private/template/
-COPY --from=angular /logbook-frontend/dist /angular
-COPY ./entrypoint.sh /run/entrypoint.sh
+COPY --from=builder /go/src/github.com/alexgunkel/logbook/logbook /backend/
+#COPY --from=builder /go/src/github.com/alexgunkel/logbook/public/Index.html /backend/public/
+COPY --from=angular /logbook-frontend/dist /frontend
+COPY ./entrypoint.sh /app/run.sh
 
 EXPOSE 8080
 
-CMD ["/run/entrypoint.sh"]
+CMD ["/app/run.sh"]

@@ -1,7 +1,5 @@
 #!/bin/sh
 
-export GIN_MODE=release
-export PORT=80
-export STATIC_APP=/angular
+export STATIC_APP=/frontend
 
-/app/logbook
+/backend/logbook
