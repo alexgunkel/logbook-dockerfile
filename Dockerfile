@@ -11,7 +11,7 @@ RUN mkdir -p /backend/public \
   && mkdir /app
 WORKDIR /app
 COPY --from=builder /go/src/github.com/alexgunkel/logbook/logbook /backend/
-COPY --from=builder /go/src/github.com/alexgunkel/logbook/public/Index.html /backend/public/
+COPY --from=builder /go/src/github.com/alexgunkel/logbook/public/Index.html /frontend/
 COPY ./run.sh /app/run.sh
 
 EXPOSE 8080
