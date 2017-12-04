@@ -23,14 +23,10 @@ RUN npm i \
 
 # finally, put all things together and build a small app-image
 FROM alpine:latest
-RUN mkdir -p /backend/public \
-  && mkdir -p /frontend \
-  && mkdir /app
 WORKDIR /app
 COPY --from=builder /go/src/github.com/alexgunkel/logbook/logbook /backend/
-#COPY --from=builder /go/src/github.com/alexgunkel/logbook/public/Index.html /backend/public/
 COPY --from=angular /logbook-frontend/dist /frontend
-COPY ./entrypoint.sh /app/run.sh
+COPY ./run.sh /app/run.sh
 
 EXPOSE 8080
 
